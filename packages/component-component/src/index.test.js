@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React from "react";
 import ReactDOM from "react-dom";
 import renderer from "react-test-renderer";
 import Component from "./index";
@@ -46,13 +46,13 @@ describe("rendering", () => {
     snapshot(
       <Component>
         {() => (
-          <Fragment>
+          <div>
             <h1>Using children prop as render prop!</h1>
             <p>
               This is a pretty neat pattern. I'm really glad someone thought of
               it.
             </p>
-          </Fragment>
+          </div>
         )}
       </Component>
     );
@@ -107,32 +107,62 @@ describe("state", () => {
       </Component>
     );
   });
-  //   it("updates state");
+  // it("updates state");
 });
 
-// describe("didMount", () => {
-//   it("does not require it");
-//   it("calls it with the right args");
-// });
+describe("didMount", () => {
+  it("does not require it", () => {
+    snapshot(
+      <Component>
+        <h1>No need for didMount prop for rendering!</h1>
+      </Component>
+    );
+  });
+  // it("calls it with the right args");
+});
 
-// describe("willUnmount", () => {
-//   it("does not require it");
-//   it("calls it with the right args");
-// });
+describe("willUnmount", () => {
+  it("does not require it", () => {
+    snapshot(
+      <Component>
+        <h1>Don't need willUnmount prop in order to render!</h1>
+      </Component>
+    );
+  });
+  // it("calls it with the right args");
+});
 
-// describe("didUpdate", () => {
-//   it("does not require it");
-//   it("calls it with the right args");
-// });
+describe("didUpdate", () => {
+  it("does not require it", () => {
+    snapshot(
+      <Component>
+        <h1>Can render without didUpdate prop!</h1>
+      </Component>
+    );
+  });
+  // it("calls it with the right args");
+});
 
-// describe("getSnapshotBeforeUpdate", () => {
-//   it("does not require it");
-//   it("calls it with the right args");
-//   it("returns to cDU correctly");
-// });
+describe("getSnapshotBeforeUpdate", () => {
+  it("does not require it", () => {
+    snapshot(
+      <Component>
+        <h1>getSnapshotBeforeUpdate prop is not necessary for render!</h1>
+      </Component>
+    );
+  });
+  // it("calls it with the right args");
+  // it("returns to cDU correctly");
+});
 
-// describe("shouldUpdate", () => {
-//   it("does not require it");
-//   it("calls it with the right args");
-//   it("returns correctly");
-// });
+describe("shouldUpdate", () => {
+  it("does not require it", () => {
+    snapshot(
+      <Component>
+        <h1>Can render without shouldUpdate prop.</h1>
+      </Component>
+    );
+  });
+  // it("calls it with the right args");
+  // it("returns correctly");
+});

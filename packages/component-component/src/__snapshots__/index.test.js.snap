@@ -1,5 +1,23 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`didMount does not require it 1`] = `
+<h1>
+  No need for didMount prop for rendering!
+</h1>
+`;
+
+exports[`didUpdate does not require it 1`] = `
+<h1>
+  Can render without didUpdate prop!
+</h1>
+`;
+
+exports[`getSnapshotBeforeUpdate does not require it 1`] = `
+<h1>
+  getSnapshotBeforeUpdate prop is not necessary for render!
+</h1>
+`;
+
 exports[`rendering prefers \`render\` over \`children\` 1`] = `
 <div>
   <h1>
@@ -9,14 +27,14 @@ exports[`rendering prefers \`render\` over \`children\` 1`] = `
 `;
 
 exports[`rendering renders with children render prop 1`] = `
-Array [
+<div>
   <h1>
     Using children prop as render prop!
-  </h1>,
+  </h1>
   <p>
     This is a pretty neat pattern. I'm really glad someone thought of it.
-  </p>,
-]
+  </p>
+</div>
 `;
 
 exports[`rendering renders with normal children 1`] = `
@@ -36,6 +54,12 @@ exports[`rendering renders without figuritively exploding 1`] = `
 <div>
   Heyyyooooo
 </div>
+`;
+
+exports[`shouldUpdate does not require it 1`] = `
+<h1>
+  Can render without shouldUpdate prop.
+</h1>
 `;
 
 exports[`state calls getInitialState 1`] = `
@@ -78,4 +102,10 @@ exports[`state receives initialState 1`] = `
     </li>
   </ol>
 </div>
+`;
+
+exports[`willUnmount does not require it 1`] = `
+<h1>
+  Don't need willUnmount prop in order to render!
+</h1>
 `;
