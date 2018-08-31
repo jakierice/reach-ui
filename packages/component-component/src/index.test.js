@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import ReactDOM from "react-dom";
 import renderer from "react-test-renderer";
 import Component from "./index";
@@ -18,10 +18,45 @@ describe("rendering", () => {
       </Component>
     );
   });
-  // it("prefers `render` over `children`");
-  // it("renders without children");
-  // it("renders with normal children");
-  // it("renders with children render prop");
+  it("prefers `render` over `children`", () => {
+    snapshot(
+      <Component
+        render={() => (
+          <div>
+            <h1>Render with an actual "render" prop</h1>
+          </div>
+        )}
+      />
+    );
+  });
+  it("renders without children", () => {
+    snapshot(<Component />);
+  });
+  it("renders with normal children", () => {
+    snapshot(
+      <Component>
+        <Fragment>
+          <h1>Some regular children!</h1>
+          <p>This is another child in the regular children group.</p>
+        </Fragment>
+      </Component>
+    );
+  });
+  it("renders with children render prop", () => {
+    snapshot(
+      <Component>
+        {() => (
+          <Fragment>
+            <h1>Using children prop as render prop!</h1>
+            <p>
+              This is a pretty neat pattern. I'm really glad someone thought of
+              it.
+            </p>
+          </Fragment>
+        )}
+      </Component>
+    );
+  });
 });
 
 // describe("refs", () => {
