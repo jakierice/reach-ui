@@ -35,10 +35,10 @@ describe("rendering", () => {
   it("renders with normal children", () => {
     snapshot(
       <Component>
-        <Fragment>
+        <div>
           <h1>Some regular children!</h1>
           <p>This is another child in the regular children group.</p>
-        </Fragment>
+        </div>
       </Component>
     );
   });
@@ -63,11 +63,52 @@ describe("rendering", () => {
 //   it("maintains refs from render to render");
 // });
 
-// describe("state", () => {
-//   it("receives initialState");
-//   it("calls getInitialState");
-//   it("updates state");
-// });
+describe("state", () => {
+  it("receives initialState", () => {
+    snapshot(
+      <Component
+        initialState={{
+          favoriteColor: "purple",
+          favoriteFood: "cheeseburgers",
+          displayName: "Henry Winkler"
+        }}
+      >
+        {({ state }) => (
+          <div>
+            <h1>{state.displayName}</h1>
+            <h2>Favorites</h2>
+            <ol>
+              <li>Color: {state.favoriteColor}</li>
+              <li>Food: {state.favoriteFood}</li>
+            </ol>
+          </div>
+        )}
+      </Component>
+    );
+  });
+  it("calls getInitialState", () => {
+    snapshot(
+      <Component
+        favoriteColor="green"
+        favoriteFood="calzones"
+        displayName="Jane Fonda"
+        getInitialState={props => ({ ...props })}
+      >
+        {({ state }) => (
+          <div>
+            <h1>{state.displayName}</h1>
+            <h2>Favorites</h2>
+            <ol>
+              <li>Color: {state.favoriteColor}</li>
+              <li>Food: {state.favoriteFood}</li>
+            </ol>
+          </div>
+        )}
+      </Component>
+    );
+  });
+  //   it("updates state");
+});
 
 // describe("didMount", () => {
 //   it("does not require it");

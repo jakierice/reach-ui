@@ -20,14 +20,14 @@ Array [
 `;
 
 exports[`rendering renders with normal children 1`] = `
-Array [
+<div>
   <h1>
     Some regular children!
-  </h1>,
+  </h1>
   <p>
     This is another child in the regular children group.
-  </p>,
-]
+  </p>
+</div>
 `;
 
 exports[`rendering renders without children 1`] = `null`;
@@ -35,5 +35,47 @@ exports[`rendering renders without children 1`] = `null`;
 exports[`rendering renders without figuritively exploding 1`] = `
 <div>
   Heyyyooooo
+</div>
+`;
+
+exports[`state calls getInitialState 1`] = `
+<div>
+  <h1>
+    Jane Fonda
+  </h1>
+  <h2>
+    Favorites
+  </h2>
+  <ol>
+    <li>
+      Color: 
+      green
+    </li>
+    <li>
+      Food: 
+      calzones
+    </li>
+  </ol>
+</div>
+`;
+
+exports[`state receives initialState 1`] = `
+<div>
+  <h1>
+    Henry Winkler
+  </h1>
+  <h2>
+    Favorites
+  </h2>
+  <ol>
+    <li>
+      Color: 
+      purple
+    </li>
+    <li>
+      Food: 
+      cheeseburgers
+    </li>
+  </ol>
 </div>
 `;
