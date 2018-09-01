@@ -3,14 +3,6 @@ import ReactDOM from "react-dom";
 import renderer, { Simulate } from "react-test-renderer";
 import Component from "./index";
 
-const COMPONENT_ARGS = {
-  state: null,
-  props: {},
-  refs: {},
-  setState: expect.any(Function),
-  forceUpdate: expect.any(Function)
-};
-
 let snapshot = element => {
   let wrapper = renderer.create(element);
   const tree = wrapper.toJSON();
@@ -150,6 +142,14 @@ describe("didMount", () => {
     );
   });
   it("calls it with the right args", () => {
+    const COMPONENT_ARGS = {
+      state: null,
+      props: {},
+      refs: {},
+      setState: expect.any(Function),
+      forceUpdate: expect.any(Function)
+    };
+
     const didMountFunction = jest.fn();
     const container = document.createElement("div");
     const wrapper = <Component didMount={didMountFunction} />;
@@ -169,7 +169,7 @@ describe("willUnmount", () => {
       </Component>
     );
   });
-  // it("calls it with the right args");
+  it("calls it with the right args");
 });
 
 describe("didUpdate", () => {
