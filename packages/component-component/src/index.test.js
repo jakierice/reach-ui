@@ -151,10 +151,11 @@ describe("didMount", () => {
     };
 
     const didMountFunction = jest.fn();
-    const container = document.createElement("div");
     const wrapper = <Component didMount={didMountFunction} />;
 
-    ReactDOM.render(wrapper, container);
+    const testComponent = renderer.create(wrapper);
+
+    expect(testComponent.root).not.toBe(null);
 
     expect(didMountFunction).toHaveBeenCalledTimes(1);
     expect(didMountFunction).toHaveBeenCalledWith(COMPONENT_ARGS);
@@ -169,7 +170,25 @@ describe("willUnmount", () => {
       </Component>
     );
   });
-  it("calls it with the right args");
+  it("calls it with the right args", () => {
+    const COMPONENT_ARGS = {
+      state: null,
+      props: {},
+      refs: {}
+    };
+
+    const willUnmountFunction = jest.fn();
+    const wrapper = <Component willUnmount={willUnmountFunction} />;
+
+    const testComponent = renderer.create(wrapper);
+
+    expect(testComponent.root).not.toBe(null);
+
+    testComponent.unmount();
+
+    expect(willUnmountFunction).toHaveBeenCalledTimes(1);
+    expect(willUnmountFunction).toHaveBeenCalledWith(COMPONENT_ARGS);
+  });
 });
 
 describe("didUpdate", () => {
