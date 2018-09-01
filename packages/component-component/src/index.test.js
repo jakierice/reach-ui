@@ -199,7 +199,29 @@ describe("didUpdate", () => {
       </Component>
     );
   });
-  // it("calls it with the right args");
+  it("calls it with the right args", () => {
+    const COMPONENT_ARGS = {
+      state: null,
+      props: {},
+      refs: {},
+      setState: expect.any(Function),
+      forceUpdate: expect.any(Function),
+      prevProps: {},
+      prevState: null
+    };
+
+    const didUpdateFunction = jest.fn();
+    const testComponent = renderer.create(
+      <Component didUpdate={didUpdateFunction} />
+    );
+
+    expect(testComponent.root).not.toBe(null);
+
+    testComponent.update(<Component didUpdate={didUpdateFunction} />);
+
+    expect(didUpdateFunction).toHaveBeenCalled();
+    expect(didUpdateFunction).toHaveBeenCalledWith(COMPONENT_ARGS, null);
+  });
 });
 
 describe("getSnapshotBeforeUpdate", () => {
@@ -210,8 +232,66 @@ describe("getSnapshotBeforeUpdate", () => {
       </Component>
     );
   });
-  // it("calls it with the right args");
-  // it("returns to cDU correctly");
+  it("calls it with the right args", () => {
+    const COMPONENT_ARGS = {
+      state: null,
+      props: {},
+      refs: {},
+      setState: expect.any(Function),
+      forceUpdate: expect.any(Function),
+      prevProps: {},
+      prevState: null
+    };
+
+    const getSnapshotBeforeUpdateFunction = jest.fn();
+    const testComponent = renderer.create(
+      <Component didUpdate={getSnapshotBeforeUpdateFunction} />
+    );
+
+    expect(testComponent.root).not.toBe(null);
+
+    testComponent.update(
+      <Component didUpdate={getSnapshotBeforeUpdateFunction} />
+    );
+
+    expect(getSnapshotBeforeUpdateFunction).toHaveBeenCalledTimes(1);
+    expect(getSnapshotBeforeUpdateFunction).toHaveBeenCalledWith(
+      COMPONENT_ARGS,
+      null
+    );
+  });
+  it("returns to cDU correctly", () => {
+    const COMPONENT_ARGS = {
+      state: null,
+      props: {},
+      refs: {},
+      setState: expect.any(Function),
+      forceUpdate: expect.any(Function),
+      prevProps: {},
+      prevState: null
+    };
+
+    const didUpdateFunction = jest.fn();
+    const getSnapshotBeforeUpdateFunction = jest.fn(() => "SNAPSHOT");
+    const testComponent = renderer.create(
+      <Component
+        didUpdate={didUpdateFunction}
+        getSnapshotBeforeUpdate={getSnapshotBeforeUpdateFunction}
+      />
+    );
+
+    expect(testComponent.root).not.toBe(null);
+
+    testComponent.update(
+      <Component
+        didUpdate={didUpdateFunction}
+        getSnapshotBeforeUpdate={getSnapshotBeforeUpdateFunction}
+      />
+    );
+
+    expect(didUpdateFunction).toHaveBeenCalledTimes(1);
+    expect(didUpdateFunction).toHaveBeenCalledWith(COMPONENT_ARGS, "SNAPSHOT");
+  });
 });
 
 describe("shouldUpdate", () => {
