@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import renderer from "react-test-renderer";
+import renderer, { Simulate } from "react-test-renderer";
 import Component from "./index";
 
 const COMPONENT_ARGS = {
@@ -115,7 +115,30 @@ describe("state", () => {
       </Component>
     );
   });
-  // it("updates state");
+  it("updates state", () => {
+    const container = document.createElement("div");
+    const mockClickEvent = jest.fn(setState => () => {
+      setState(prevState => ({ goodAtTesting: !prevState.goodAtTesting }));
+    });
+    const wrapper = (
+      <Component initialState={{ goodAtTesting: false }}>
+        {({ state, setState }) => (
+          <div>
+            <h1>{state.goodAtTesting ? "Yay!" : "Boo!"}</h1>
+            <button onClick={() => mockClickEvent(setState)}>
+              Learn some more
+            </button>
+          </div>
+        )}
+      </Component>
+    );
+
+    ReactDOM.render(wrapper, container);
+    const textElement = container.querySelector("h1").firstChild.nodeValue;
+
+    expect(textElement).toBe("Boo!");
+    // expect(mockClickEvent).toHaveBeenCalled();
+  });
 });
 
 describe("didMount", () => {
