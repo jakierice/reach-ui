@@ -59,9 +59,23 @@ describe("rendering", () => {
   });
 });
 
-// describe("refs", () => {
-//   it("maintains refs from render to render");
-// });
+describe("refs", () => {
+  it("maintains refs from render to render", () => {
+    const MOCK_REFS = {
+      firstDummyRef: { current: "FIRST_MOCK_NODE" },
+      secondDummyRef: { current: "SECOND_MOCK_NODE" }
+    };
+    const testComponent = renderer.create(<Component refs={MOCK_REFS} />);
+
+    // assert refs match expected on mount
+    expect(testComponent.getInstance()._refs).toEqual(MOCK_REFS);
+
+    // "update" component and check if refs still match
+    testComponent.update(<Component />);
+
+    expect(testComponent.getInstance()._refs).toEqual(MOCK_REFS);
+  });
+});
 
 describe("state", () => {
   it("receives initialState", () => {
