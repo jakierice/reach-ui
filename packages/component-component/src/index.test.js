@@ -1,6 +1,5 @@
 import React from "react";
-import ReactDOM from "react-dom";
-import renderer, { Simulate } from "react-test-renderer";
+import renderer from "react-test-renderer";
 import Component from "./index";
 
 let snapshot = element => {
@@ -72,7 +71,6 @@ describe("refs", () => {
 
     // "update" component and check if refs still match
     testComponent.update(<Component />);
-
     expect(testComponent.getInstance()._refs).toEqual(MOCK_REFS);
   });
 });
@@ -122,6 +120,7 @@ describe("state", () => {
     );
   });
   it("updates state", () => {
+    // create spy function to be triggered with Component setState as callback
     const setStateFunction = jest.fn(setState => {
       setState({ goodAtTesting: true });
     });
@@ -144,14 +143,14 @@ describe("state", () => {
       className: "test-button"
     });
 
-    // assert state to match initialState
+    // assert state value to match initialState
     expect(testComponent.getInstance().state.goodAtTesting).toBe(false);
 
     // trigger returned setState function using mock click event
     buttonElement.props.onClick();
     expect(setStateFunction).toHaveBeenCalled();
 
-    // assert that state has been updated
+    // assert that state value has been updated
     expect(testComponent.getInstance().state.goodAtTesting).toBe(true);
   });
 });
@@ -174,12 +173,14 @@ describe("didMount", () => {
     };
 
     const didMountFunction = jest.fn();
-    const wrapper = <Component didMount={didMountFunction} />;
+    const testComponent = renderer.create(
+      <Component didMount={didMountFunction} />
+    );
 
-    const testComponent = renderer.create(wrapper);
-
+    // component should be mounted
     expect(testComponent.root).not.toBe(null);
 
+    // didMount lifecycle called only once with expected arguments
     expect(didMountFunction).toHaveBeenCalledTimes(1);
     expect(didMountFunction).toHaveBeenCalledWith(COMPONENT_ARGS);
   });
@@ -201,14 +202,17 @@ describe("willUnmount", () => {
     };
 
     const willUnmountFunction = jest.fn();
-    const wrapper = <Component willUnmount={willUnmountFunction} />;
+    const testComponent = renderer.create(
+      <Component willUnmount={willUnmountFunction} />
+    );
 
-    const testComponent = renderer.create(wrapper);
-
+    // component should be mounted
     expect(testComponent.root).not.toBe(null);
 
+    // unmount component
     testComponent.unmount();
 
+    // assert that willUnmount was called only once with expected arguments
     expect(willUnmountFunction).toHaveBeenCalledTimes(1);
     expect(willUnmountFunction).toHaveBeenCalledWith(COMPONENT_ARGS);
   });
@@ -238,16 +242,28 @@ describe("didUpdate", () => {
       <Component didUpdate={didUpdateFunction} />
     );
 
+    // component should be mounted
     expect(testComponent.root).not.toBe(null);
 
+    // "update" component
     testComponent.update(<Component didUpdate={didUpdateFunction} />);
 
-    expect(didUpdateFunction).toHaveBeenCalled();
+    // assert that didUpdate is called only once with expected arguments and no snapshot
+    expect(didUpdateFunction).toHaveBeenCalledTimes(1);
     expect(didUpdateFunction).toHaveBeenCalledWith(COMPONENT_ARGS, null);
   });
 });
 
 describe("getSnapshotBeforeUpdate", () => {
+  const COMPONENT_ARGS = {
+    state: null,
+    props: {},
+    refs: {},
+    setState: expect.any(Function),
+    forceUpdate: expect.any(Function),
+    prevProps: {},
+    prevState: null
+  };
   it("does not require it", () => {
     snapshot(
       <Component>
@@ -256,46 +272,43 @@ describe("getSnapshotBeforeUpdate", () => {
     );
   });
   it("calls it with the right args", () => {
-    const COMPONENT_ARGS = {
-      state: null,
-      props: {},
-      refs: {},
-      setState: expect.any(Function),
-      forceUpdate: expect.any(Function),
-      prevProps: {},
-      prevState: null
-    };
-
-    const getSnapshotBeforeUpdateFunction = jest.fn();
-    const testComponent = renderer.create(
-      <Component didUpdate={getSnapshotBeforeUpdateFunction} />
+    const getSnapshotBeforeUpdateFunction = jest.fn(
+      () => "MOCK_SNAPSHOT_VALUE"
     );
 
+    const testComponent = renderer.create(
+      <Component getSnapshotBeforeUpdate={getSnapshotBeforeUpdateFunction} />
+    );
+
+    // component should be mounted
     expect(testComponent.root).not.toBe(null);
 
+    // "update" component
     testComponent.update(
-      <Component didUpdate={getSnapshotBeforeUpdateFunction} />
+      <Component getSnapshotBeforeUpdate={getSnapshotBeforeUpdateFunction} />
     );
 
+    // assert that getSnapshotBeforeUpdate was called only once
     expect(getSnapshotBeforeUpdateFunction).toHaveBeenCalledTimes(1);
     expect(getSnapshotBeforeUpdateFunction).toHaveBeenCalledWith(
-      COMPONENT_ARGS,
-      null
+      COMPONENT_ARGS
     );
   });
   it("returns to cDU correctly", () => {
-    const COMPONENT_ARGS = {
-      state: null,
-      props: {},
-      refs: {},
-      setState: expect.any(Function),
-      forceUpdate: expect.any(Function),
-      prevProps: {},
-      prevState: null
-    };
+    // const COMPONENT_ARGS = {
+    //   state: null,
+    //   props: {},
+    //   refs: {},
+    //   setState: expect.any(Function),
+    //   forceUpdate: expect.any(Function),
+    //   prevProps: {},
+    //   prevState: null
+    // };
 
     const didUpdateFunction = jest.fn();
-    const getSnapshotBeforeUpdateFunction = jest.fn(() => "SNAPSHOT");
+    const getSnapshotBeforeUpdateFunction = jest.fn(
+      () => "MOCK_SNAPSHOT_VALUE"
+    );
     const testComponent = renderer.create(
       <Component
         didUpdate={didUpdateFunction}
@@ -303,8 +316,10 @@ describe("getSnapshotBeforeUpdate", () => {
       />
     );
 
+    // component should be mounted
     expect(testComponent.root).not.toBe(null);
 
+    // "update" component to trigger snapshot
     testComponent.update(
       <Component
         didUpdate={didUpdateFunction}
@@ -312,8 +327,12 @@ describe("getSnapshotBeforeUpdate", () => {
       />
     );
 
+    // getSnapshotBeforeUpdate should be called only once with expected arguments and snapshot value
     expect(didUpdateFunction).toHaveBeenCalledTimes(1);
-    expect(didUpdateFunction).toHaveBeenCalledWith(COMPONENT_ARGS, "SNAPSHOT");
+    expect(didUpdateFunction).toHaveBeenCalledWith(
+      COMPONENT_ARGS,
+      "MOCK_SNAPSHOT_VALUE"
+    );
   });
 });
 
