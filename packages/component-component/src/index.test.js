@@ -108,28 +108,37 @@ describe("state", () => {
     );
   });
   it("updates state", () => {
-    const container = document.createElement("div");
-    const mockClickEvent = jest.fn(setState => () => {
-      setState(prevState => ({ goodAtTesting: !prevState.goodAtTesting }));
+    const setStateFunction = jest.fn(setState => {
+      setState({ goodAtTesting: true });
     });
-    const wrapper = (
+    const testComponent = renderer.create(
       <Component initialState={{ goodAtTesting: false }}>
         {({ state, setState }) => (
           <div>
-            <h1>{state.goodAtTesting ? "Yay!" : "Boo!"}</h1>
-            <button onClick={() => mockClickEvent(setState)}>
-              Learn some more
+            <button
+              className="test-button"
+              onClick={() => setStateFunction(setState)}
+            >
+              Get Good
             </button>
           </div>
         )}
       </Component>
     );
 
-    ReactDOM.render(wrapper, container);
-    const textElement = container.querySelector("h1").firstChild.nodeValue;
+    const buttonElement = testComponent.root.findByProps({
+      className: "test-button"
+    });
 
-    expect(textElement).toBe("Boo!");
-    // expect(mockClickEvent).toHaveBeenCalled();
+    // assert state to match initialState
+    expect(testComponent.getInstance().state.goodAtTesting).toBe(false);
+
+    // trigger returned setState function using mock click event
+    buttonElement.props.onClick();
+    expect(setStateFunction).toHaveBeenCalled();
+
+    // assert that state has been updated
+    expect(testComponent.getInstance().state.goodAtTesting).toBe(true);
   });
 });
 
@@ -295,6 +304,13 @@ describe("getSnapshotBeforeUpdate", () => {
 });
 
 describe("shouldUpdate", () => {
+  const SHOULD_UPDATE_ARGS = {
+    state: null,
+    props: {},
+    nextProps: {},
+    nextState: null
+  };
+
   it("does not require it", () => {
     snapshot(
       <Component>
@@ -302,6 +318,38 @@ describe("shouldUpdate", () => {
       </Component>
     );
   });
-  // it("calls it with the right args");
-  // it("returns correctly");
+  it("calls it with the right args", () => {
+    const shouldUpdateFunction = jest.fn(() => false);
+    const testComponent = renderer.create(
+      <Component shouldUpdate={shouldUpdateFunction} />
+    );
+
+    expect(testComponent.root).not.toBe(null);
+
+    testComponent.update(<Component shouldUpdate={shouldUpdateFunction} />);
+
+    expect(shouldUpdateFunction).toHaveBeenCalledTimes(1);
+    expect(shouldUpdateFunction).toHaveBeenCalledWith(SHOULD_UPDATE_ARGS);
+  });
+  it("returns correctly", () => {
+    const shouldUpdateFunction = jest.fn(() => false);
+    const testComponent = renderer.create(<Component />);
+    const testShouldUpdateComponent = renderer.create(
+      <Component shouldUpdate={shouldUpdateFunction} />
+    );
+
+    // "update" Component without shouldUpdate()
+    testComponent.update(<Component />);
+
+    // assert that shouldUpdate callback has not been called
+    expect(shouldUpdateFunction).not.toHaveBeenCalled();
+
+    // "update" Component with shouldUpdate() prop
+    testShouldUpdateComponent.update(
+      <Component shouldUpdate={shouldUpdateFunction} />
+    );
+
+    // assert that shouldUpdate has been called with args
+    expect(shouldUpdateFunction).toHaveBeenCalledWith(SHOULD_UPDATE_ARGS);
+  });
 });

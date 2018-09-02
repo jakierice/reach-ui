@@ -67,7 +67,9 @@ class Component extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
     if (this.props.shouldUpdate)
       return this.props.shouldUpdate({
-        props: this.props,
+        // TODO: Check with @ryanflorence if this should be returning cleaned props
+        // props: this.props,
+        props: cleanProps(this.props),
         state: this.state,
         nextProps: cleanProps(nextProps),
         nextState
