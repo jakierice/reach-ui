@@ -264,6 +264,7 @@ describe("getSnapshotBeforeUpdate", () => {
     prevProps: {},
     prevState: null
   };
+
   it("does not require it", () => {
     snapshot(
       <Component>
@@ -295,16 +296,6 @@ describe("getSnapshotBeforeUpdate", () => {
     );
   });
   it("returns to cDU correctly", () => {
-    // const COMPONENT_ARGS = {
-    //   state: null,
-    //   props: {},
-    //   refs: {},
-    //   setState: expect.any(Function),
-    //   forceUpdate: expect.any(Function),
-    //   prevProps: {},
-    //   prevState: null
-    // };
-
     const didUpdateFunction = jest.fn();
     const getSnapshotBeforeUpdateFunction = jest.fn(
       () => "MOCK_SNAPSHOT_VALUE"
@@ -357,10 +348,13 @@ describe("shouldUpdate", () => {
       <Component shouldUpdate={shouldUpdateFunction} />
     );
 
+    // component should be mounted
     expect(testComponent.root).not.toBe(null);
 
+    // "update" component
     testComponent.update(<Component shouldUpdate={shouldUpdateFunction} />);
 
+    // shouldUpdate lifecycle function should only be called once with expected arguments
     expect(shouldUpdateFunction).toHaveBeenCalledTimes(1);
     expect(shouldUpdateFunction).toHaveBeenCalledWith(SHOULD_UPDATE_ARGS);
   });
