@@ -25,7 +25,10 @@ export default media => {
   }, {});
 
   const notify = () => {
-    if (transientListener != null)
+    if (
+      transientListener &&
+      typeof transientListener === "function"
+    )
       transientListener(mediaState);
   };
 
